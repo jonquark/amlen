@@ -64,7 +64,7 @@ So do the setup steps to get an rpmbuild environment (required for any of the ot
 the extra deps rpm e.g. by:
 ```
 cd $DEPS_HOME #With the dependencies downloaded from the URL in the dependencies section
-zip ~/rpmbuild/SOURCES/imawebui-deps.zip d3.zip  dojo-webui-release-1.16.3-src.zip  gridx-webui-1.3.9.zip  ibm-java-jre-8.0-6.15-linux-x86_64.tgz openliberty-21.0.0.2.zip icu4j-69_1.jar jackson-*2.12.3*.jar
+zip ~/rpmbuild/SOURCES/imawebui-deps.zip d3.zip  dojo-webui-release-1.17.1-src.zip  gridx-webui-1.3.9.zip  ibm-java-jre-8.0-6.15-linux-x86_64.tgz openliberty-21.0.0.2.zip icu4j-69_1.jar jackson-*2.12.3*.jar
 
 ```
 and then do the build:

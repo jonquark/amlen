@@ -56,8 +56,8 @@ and placed into a directory (set the $DEP_HOME environment variable to point to 
     https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-jaxb-annotations/2.12.3/
 * icu4j-69_1.jar
     https://github.com/unicode-org/icu/releases/tag/release-69-1
-* dojo-release-1.16.3-src.zip
-    https://download.dojotoolkit.org/release-1.16.3/ 
+* dojo-release-1.17.1-src.zip
+    https://download.dojotoolkit.org/release-1.17.1/ 
 * gridx-1.3.9.zip
     https://github.com/oria/gridx/releases
 * d3-3.5.6.zip
