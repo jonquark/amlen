@@ -1262,7 +1262,7 @@ nsslapd-pagedlookthroughlimit: 0
 nsslapd-pagedidlistscanlimit: 0
 nsslapd-rangelookthroughlimit: 5000
 nsslapd-backend-opt-level: 1
-nsslapd-backend-implement: bdb
+nsslapd-backend-implement: mdb
 
 dn: cn=monitor,cn=ldbm database,cn=plugins,cn=config
 objectClass: top
@@ -1589,30 +1589,18 @@ nsSaslMapRegexString: ^dn:\(.*\)
 nsSaslMapBaseDNTemplate: \1
 nsSaslMapFilterTemplate: (objectclass=*)
 
-dn: cn=bdb,cn=config,cn=ldbm database,cn=plugins,cn=config
-objectClass: extensibleobject
-objectClass: top
-cn: bdb
-nsslapd-dbcachesize: 103643136
-nsslapd-db-logdirectory: ${IMA_WEBUI_DATA_PATH}/ldap-instance/db
-nsslapd-db-durable-transaction: on
-nsslapd-db-transaction-wait: off
-nsslapd-db-checkpoint-interval: 60
-nsslapd-db-compactdb-interval: 2592000
-nsslapd-db-transaction-batch-val: 0
-nsslapd-db-transaction-batch-min-wait: 50
-nsslapd-db-transaction-batch-max-wait: 50
-nsslapd-db-logbuf-size: 0
-nsslapd-db-locks: 10000
-nsslapd-db-private-import-mem: on
-nsslapd-db-home-directory: ${IMA_WEBUI_DATA_PATH}/ldap-instance/db
-nsslapd-import-cache-autosize: -1
-nsslapd-cache-autosize: 25
-nsslapd-cache-autosize-split: 25
-nsslapd-import-cachesize: 16777216
-nsslapd-search-bypass-filter-test: on
-nsslapd-serial-lock: on
-nsslapd-db-deadlock-policy: 9
+dn: cn=module,cn=config
+objectClass: oldModuleList
+cn: module
+olcModulePath: /usr/lib/ldap
+oldModuleLoad: back_mdb
+
+dn: olcDatabase=mdb,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcMdbConfig
+olcDatabase: mdb
+olcSuffix: dc=wiotp,dc=org
+olcDbDirectory: /var/lib/ldap
 
 dn: cn=default indexes,cn=config,cn=ldbm database,cn=plugins,cn=config
 objectClass: top
