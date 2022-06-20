@@ -1,0 +1,25 @@
+---
+- name: Create Internal Certificates
+  include_role:
+    name: certificates
+  vars:
+    namespace: "{{ _amlen_namespace }}"
+    cert: "{{ item }} "
+    issuerName: "{{ _amlen_namespace}}-internal-issuer"
+    duration: 175200h0m0s
+    renewBefore: 2160h0m0s
+    waitForCert: yes
+  loop:
+  - name: "{{ _amlen_name }}-ldap-certs"
+    usages: [ "client auth", "server auth" ]
+
+- name: Set the ldaps {{ _amlen_state }}
+  k8s:
+    state: "{{ _amlen_state }}"
+    merge_type:
+    - strategic-merge
+    - merge
+    definition: "{{ lookup('template', item ) | from_yaml }}"
+  loop:
+  - ./templates/ldap.j2
+  - ./templates/ldap-service.j2

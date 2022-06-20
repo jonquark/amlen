@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ldap
+  name: ldap-service
+  namespace: "{{ _amlen_namespace }}"
+spec:
+  ports:
+    - port: {{ LDAP_PORT_NUMNER | default(1389) }}
+  selector:
+    app: ldap
