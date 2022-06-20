@@ -67,7 +67,7 @@
   vars:
     namespace: "{{ _amlen_namespace }}"
     cert: "{{ item }} "
-    issuerName: "amlen-internal-issuer"
+    issuerName: "{{ _amlen_namespace}}-internal-issuer"
     duration: 175200h0m0s
     renewBefore: 2160h0m0s
     waitForCert: yes
