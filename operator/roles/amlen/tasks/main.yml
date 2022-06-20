@@ -18,3 +18,7 @@
   loop: "{{ range(0,size,1)|list}}"
   loop_control:
     loop_var: pair_id
+
+- name: configure LDAP
+  include_tasks: configure_ldap.yml
+  when: configure_ldap is defined

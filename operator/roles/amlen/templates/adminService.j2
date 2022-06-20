@@ -5,7 +5,7 @@ metadata:
   namespace: "{{ _amlen_namespace }}"
 spec:
   selector:
-    app: "{{ pair_name }}-{{ node_index }}"
+    statefulset.kubernetes.io/pod-name: "{{ pair_name }}-{{ node_index }}"
   ports:
   - port: 9089 
     name: admin-port 

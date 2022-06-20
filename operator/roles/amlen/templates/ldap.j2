@@ -22,6 +22,8 @@ spec:
           volumeMounts:
             - name: ldap-config
               mountPath: /ldifs
+            - name: internal-certs
+              mountPath: /secrets/internal_certs
           ports:
             - containerPort: {{ LDAP_PORT_NUMNER | default(1389) }}
               name: openldap
@@ -53,3 +55,6 @@ spec:
       - name: ldap-config
         configMap:
           name: ldap-config
+      - name: internal-certs
+        secret:
+          secretName: "{{ _amlen_namespace }}-ldap-certs"
