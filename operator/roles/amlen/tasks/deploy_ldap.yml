@@ -26,13 +26,13 @@
 
 - name: Wait until ldap is available
   k8s_info:
-    kind: Deployment
+    kind: StatefulSet
     name: "ldap"
     namespace: "{{ _amlen_namespace }}"
-  register: deployment
+  register: statefulset
   until:
-  - deployment.resources[0].status.readyReplicas is defined
-  - deployment.resources[0].status.readyReplicas == 1
+  - statefulset.resources[0].status.readyReplicas is defined
+  - statefulset.resources[0].status.readyReplicas == 1
   retries: 50
   delay: 10
   ignore_errors: yes

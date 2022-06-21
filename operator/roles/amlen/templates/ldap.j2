@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: ldap
   namespace: "{{ _amlen_namespace }}"
@@ -20,6 +20,8 @@ spec:
           image: bitnami/openldap:latest
           terminationMessagePolicy: "FallbackToLogsOnError"
           volumeMounts:
+            - name: data
+              mountPath: /bitnami/openldap
             - name: ldap-config
               mountPath: /ldifs
             - name: internal-certs
@@ -70,3 +72,13 @@ spec:
       - name: internal-certs
         secret:
           secretName: "{{ _amlen_name }}-ldap-certs"
+
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: "{{_ldap_volume_size}}"
+

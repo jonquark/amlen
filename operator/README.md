@@ -54,6 +54,55 @@ _amlen_image_tag: latest
 
 These defaults are suitable for creating demo systems only volume size, memory and cpu limits should be sized correctly for production systems
 
+## LDAP
+
+By adding:
+
+```
+deploy_ldap: true
+```
+
+to the Amlen CustomResourceDefinition an LDAP server will be created in the namespace and all amlen instances will be configured to use it. This means that authentication can be done via LDAP. This requires an ldap-config configmap to exist, one that works can be found in config/samples/config-ldap.yaml many of the values used to configure amlen are hardcoded so changing the config is likely to break authentication but you can add users to the config.
+
+Once LDAP has been deployed it is possible to add users using ldapadd here is an example ldif for adding 2 users:
+
+```
+dn: cn=msgUser1,ou=users,dc=amleninternal,dc=auth
+c angetype: add
+objectclass: inetOrgPerson
+cn: msgUser1
+givenname: msgUser1
+sn: msgUser1
+displayname: Messaging User 1
+userpassword: msgUser1_pass
+
+dn: cn=msgUser2,ou=users,dc=amleninternal,dc=auth
+changetype: add
+objectclass: inetOrgPerson
+cn: msgUser2
+givenname: msgUser2
+sn: msgUser2
+displayname: Messaging User 2
+userpassword: msgUser2_pass
+
+dn: cn=msgUsers,ou=groups,dc=amleninternal,dc=auth
+changetype: add
+cn: msgUsers
+objectclass: groupOfUniqueNames
+uniqueMember: cn=msgUser1,ou=users,dc=amleninternal,dc=auth
+uniqueMember: cn=msgUser2,ou=users,dc=amleninternal,dc=auth
+```
+
+If exec'd into the LDAP container this could be added via:
+```
+ldapadd -H ldap://localhost:1389 -D "cn=admin,dc=amleninternal,dc=auth" -w adminpassword -f /tmp/users.ldif
+```
+
+This assumes using the default config and passwords. Exposing the ldap-service it is possible to run it externally.
+
+To enable clients to connect via passwords the amlen config will need to be changed, the UsePasswordAuthentication of the security profile will need to be set to true.
+
+
 ## Limitations
 
 This is still in development and so is mainly focused on installation as such there are a number of limitations:
@@ -62,6 +111,7 @@ This is still in development and so is mainly focused on installation as such th
 * Cleanup of PVCs must be done manually
 * Updates of Amlen (either by changing the _amlen_image_tag in the CRD or issuing a roll out of the statefulset) is likely to cause double disconnects in HA pairs. After a fresh install instance 0 in the pair will be primary but a subsequent update will make instance 1 to be primary, if instance 1 is the primary then an update will cause double disconnects due to always updating instance 1 first which will mean devices failover to instance 0 then fail back when instance 0 is updated.
 * Changing the admin password is dangerous, in theory you can update the secret to the new password then run the rest API command to change the admin password then issue a rolling restart of the statefulset, in practice it may well fall over as the readiness script will fail during this process.
+* once LDAP has been deployed it will not get undeployed by editting the CRD and Amlen will not be deconfigured from using LDAP 
 
 ## Testing
 
@@ -73,11 +123,11 @@ The test uses some of the sample files to create 2 HA pairs (4 pods in total) us
 
 ### amlen_v1_amlen.yaml
 
-Creates 2 HA pair systems using a simple config and certificate
+Creates 2 HA pair systems using a simple config and certificate and deploys LDAP
 
 ### _v1alpha_amlen.yaml
 
-Same as amlen_v1_amlen but will use the osdk-test namespace for use in molecule testing
+Used in the osdk-test namespace for use in molecule testing
 
 ### config.yaml
 
@@ -90,3 +140,11 @@ Create a ClusterIssuer that produces self signed certificates
 ### simple_password.yaml
 
 An example of how to pre-set the admin password for a system given the system name (the name that matches the stateful set that is created) and the namespace.
+
+### config-ldap.yaml
+
+An example configuration if using the operator to deploy LDAP
+
+### small_amlen.yaml
+
+A config for producing a single Amlen instance with LDAP deployed
