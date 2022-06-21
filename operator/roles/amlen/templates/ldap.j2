@@ -25,31 +25,43 @@ spec:
             - name: internal-certs
               mountPath: /secrets/internal_certs
           ports:
-            - containerPort: {{ LDAP_PORT_NUMNER | default(1389) }}
+            - containerPort: 1389
               name: openldap
+            - containerPort: 1636
+              name: openldaps
           env:
-            - name: LSAP_PORT_NUMBER
-              value: "{{ LDAP_PORT_NUMNER | default('1389') }}"
+            - name: LDAP_PORT_NUMBER
+              value: "1389"
+            - name: LDAP_LDAPS_PORT_NUMBER
+              value: "1636"
             - name: LDAP_ROOT
-              value: "{{ LDAP_ROOT | default('dc=amleninternal,dc=auth') }}"
+              value: "dc=amleninternal,dc=auth"
             - name: LDAP_ADMIN_USERNAME
-              value: "{{ LDAP_ADMIN_USERNAME | default('admin') }}"
+              value: "admin"
             - name: LDAP_ADMIN_PASSWORD
               value: "{{ LDAP_ADMIN_PASSWORD | default('adminpassword') }}"
             - name: LDAP_LOGLEVEL
               value: "{{ LDAP_LOGLEVEL | default('-1') }}"
             - name: BITNAMI_DEBUG
-              value: "{{ BITNAMI_DEBUG | default(true) }}"
+              value: "{{ BITNAMI_DEBUG | default(false) }}"
             - name: LDAP_BIND_DN
-              value: "{{ LDAP_BIND_DN | default('cn=admin,dc=amleninternal,dc=auth') }}"
+              value: "cn=admin,dc=amleninternal,dc=auth"
             - name: LDAP_BIND_PASSWORD
               value: "{{ LDAP_BIND_PASSWORD | default('adminpassword') }}"
             - name: LDAP_CONFIG_ADMIN_ENABLED
-              value: "{{ LDAP_CONFIG_ADMIN_ENABLED | default('yes') }}"
+              value: "{{ LDAP_CONFIG_ADMIN_ENABLED | default('no') }}"
             - name: LDAP_CONFIG_ADMIN_USERNAME
-              value: "{{ LDAP_CONFIG_ADMIN_USERNAME | default('admin') }}"
+              value: "admin"
             - name: LDAP_CONFIG_ADMIN_PASSWORD
               value: "{{ LDAP_CONFIG_ADMIN_PASSWORD | default('adminpassword') }}"
+            - name: LDAP_ENABLE_TLS
+              value: "{{ LDAP_ENABLE_TLS | default('yes') }}"
+            - name: LDAP_TLS_CERT_FILE
+              value: "/secrets/internal_certs/tls.crt"
+            - name: LDAP_TLS_KEY_FILE
+              value: "/secrets/internal_certs/tls.key"
+            - name: LDAP_TLS_CA_FILE
+              value: "/secrets/internal_certs/ca.crt"
    
       volumes:
       - name: ldap-config
@@ -57,4 +69,4 @@ spec:
           name: ldap-config
       - name: internal-certs
         secret:
-          secretName: "{{ _amlen_namespace }}-ldap-certs"
+          secretName: "{{ _amlen_name }}-ldap-certs"

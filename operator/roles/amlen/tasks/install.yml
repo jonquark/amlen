@@ -38,7 +38,7 @@
     namespace: "{{ _amlen_namespace }}"
   register: certs
 
-- name: create admin routs
+- name: create admin services
   k8s:
     state: "{{ _amlen_state }}"
     merge_type:
@@ -58,4 +58,6 @@
     tls.crt: "{{certs.resources[0].data['tls.crt']|b64decode}}"
     tls.key: "{{certs.resources[0].data['tls.key']|b64decode}}"
     config: "{{config2}}"
+  async: 120
+  poll: 10
   no_log: False

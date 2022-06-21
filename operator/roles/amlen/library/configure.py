@@ -36,7 +36,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 DEFAULT_HEARTBEAT = 10
 
 def getLogger(name="amlen-configurator"):
-    logging.basicConfig(filename='/tmp/funfile.log', level=logging.DEBUG)
+    logging.basicConfig(filename='/tmp/configure.log', level=logging.DEBUG)
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
 

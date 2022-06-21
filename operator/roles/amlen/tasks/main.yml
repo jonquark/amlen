@@ -19,6 +19,6 @@
   loop_control:
     loop_var: pair_id
 
-- name: configure LDAP
-  include_tasks: configure_ldap.yml
-  when: configure_ldap is defined
+- name: deploy LDAP
+  include_tasks: deploy_ldap.yml
+  when: deploy_ldap is defined
