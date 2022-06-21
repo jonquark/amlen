@@ -7,7 +7,9 @@ metadata:
   namespace: "{{ _amlen_namespace }}"
 spec:
   ports:
-    - port: 1389
-    - port: 1636
+  - port: 1389
+    name: ldap
+  - port: 1636
+    name: ldaps
   selector:
     app: ldap

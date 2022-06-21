@@ -24,10 +24,6 @@
   - ./templates/ldap.j2
   - ./templates/ldap-service.j2
 
-- name: Debug
-  debug:
-    var: deployment_debug
-
 - name: Wait until ldap is available
   k8s_info:
     kind: Deployment
