@@ -12,8 +12,8 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
-  - name: amlen-centos7-build
-    image: quay.io/amlen/amlen-builder-centos7:1.0.0.1
+  - name: almalinux8
+    image: quay.io/almalinux/almalinux:8
     command:
     - cat
     tty: true
@@ -45,13 +45,14 @@ spec:
   stages {
         stage('Init') {
             steps {
-                container('amlen-centos7-build') {
+                container('almalinux8') {
                     script {
                         if (env.BUILD_LABEL == null ) {
                             env.BUILD_LABEL = sh(script: "date +%Y%m%d-%H%M", returnStdout: true).toString().trim() +"_eclipsecentos7"
                         }
                     }
                     echo "In Init, BUILD_LABEL is ${env.BUILD_LABEL}"    
+                    pwd
                 }
             }
         }
