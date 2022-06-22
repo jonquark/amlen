@@ -1,0 +1,74 @@
+// By default we build on the oldest supported distro (centos7)
+// A Jenkinsfile used for other distros (with associated build container Dockerfiles)
+// along with other jenkins files we use are all in server_build/buildcontainer
+//
+
+pipeline {
+  agent {
+    kubernetes {
+      label 'operator-build-pod'
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: amlen-centos7-build
+    image: quay.io/amlen/amlen-builder-centos7:1.0.0.1
+    command:
+    - cat
+    tty: true
+    resources:
+      limits:
+        memory: "4Gi"
+        cpu: "2"
+      requests:
+        memory: "4Gi"
+        cpu: "2"
+    volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
+  - name: jnlp
+    volumeMounts:
+    - name: volume-known-hosts
+      mountPath: /home/jenkins/.ssh
+  volumes:
+  - name: volume-known-hosts
+    configMap:
+      name: known-hosts
+  - name: dshm
+    emptyDir:
+      medium: Memory
+"""
+    }
+  } 
+
+  stages {
+        stage('Init') {
+            steps {
+                container('amlen-centos7-build') {
+                    script {
+                        if (env.BUILD_LABEL == null ) {
+                            env.BUILD_LABEL = sh(script: "date +%Y%m%d-%H%M", returnStdout: true).toString().trim() +"_eclipsecentos7"
+                        }
+                    }
+                    echo "In Init, BUILD_LABEL is ${env.BUILD_LABEL}"    
+                }
+            }
+        }
+    }
+    post {
+        // send a mail on unsuccessful and fixed builds
+        unsuccessful { // means unstable || failure || aborted
+            emailext subject: 'Build $BUILD_STATUS $PROJECT_NAME #$BUILD_NUMBER!', 
+            body: '''Check console output at $BUILD_URL to view the results.''',
+            recipientProviders: [culprits(), requestor()], 
+            to: 'ianboden@uk.ibm.com'
+        }
+        fixed { // back to normal
+            emailext subject: 'Build $BUILD_STATUS $PROJECT_NAME #$BUILD_NUMBER!', 
+            body: '''Check console output at $BUILD_URL to view the results.''',
+            recipientProviders: [culprits(), requestor()], 
+            to: 'ianboden@uk.ibm.com'
+        }
+    }
+}

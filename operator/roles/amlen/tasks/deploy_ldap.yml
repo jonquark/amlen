@@ -33,7 +33,7 @@
   until:
   - statefulset.resources[0].status.readyReplicas is defined
   - statefulset.resources[0].status.readyReplicas == 1
-  retries: 50
+  retries: 10
   delay: 10
   ignore_errors: yes
   loop: "{{ range(0,nodes|int)|list}}"
