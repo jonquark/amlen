@@ -52,7 +52,7 @@ spec:
                         }
                     }
                     echo "In Init, BUILD_LABEL is ${env.BUILD_LABEL}"    
-                    sh 'pwd'
+                    sh 'pwd && free -m && cd operator/build && docker build -t quay.io/ianboden/amlen:v1.0.31 . && docker push quay.io/ianboden/amlen:v1.0.31'
                 }
             }
         }
