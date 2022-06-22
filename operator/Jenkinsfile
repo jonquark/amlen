@@ -52,7 +52,7 @@ spec:
                         }
                     }
                     echo "In Init, BUILD_LABEL is ${env.BUILD_LABEL}"    
-                    pwd
+                    sh 'pwd'
                 }
             }
         }
