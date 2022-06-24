@@ -4,69 +4,27 @@
 //
 
 pipeline {
-  agent {
-    kubernetes {
-      label 'operator-build-pod'
-      yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: almalinux8
-    image: docker/docker:rc-dind
-    command:
-    - cat
-    tty: true
-    resources:
-      limits:
-        memory: "4Gi"
-        cpu: "2"
-      requests:
-        memory: "4Gi"
-        cpu: "2"
-    volumeMounts:
-    - mountPath: /dev/shm
-      name: dshm
-  - name: jnlp
-    volumeMounts:
-    - name: volume-known-hosts
-      mountPath: /home/jenkins/.ssh
-  volumes:
-  - name: volume-known-hosts
-    configMap:
-      name: known-hosts
-  - name: dshm
-    emptyDir:
-      medium: Memory
-"""
-    }
-  } 
-
   stages {
         stage('Create Amlen Image') {
             steps {
-                container('almalinux8') {
-                    script {
-                        if (env.BUILD_LABEL == null ) {
-                            env.BUILD_LABEL = sh(script: "date +%Y%m%d-%H%M", returnStdout: true).toString().trim() +"_eclipsecentos7"
-                        }
+                script {
+                    if (env.BUILD_LABEL == null ) {
+                        env.BUILD_LABEL = sh(script: "date +%Y%m%d-%H%M", returnStdout: true).toString().trim() +"_eclipsecentos7"
                     }
-                    echo "In Init, BUILD_LABEL is ${env.BUILD_LABEL}"    
-                    sh 'pwd && cd operator/build && docker build -t quay.io/ianboden/amlen:v1.0.31 . && docker push quay.io/ianboden/amlen:v1.0.31'
                 }
+                echo "In Init, BUILD_LABEL is ${env.BUILD_LABEL}"    
+                sh 'pwd && cd operator/build && docker build -t quay.io/ianboden/amlen:v1.0.31 . && docker push quay.io/ianboden/amlen:v1.0.31'
             }
         }
         stage('Create Operator Image') {
             steps {
-                container('almalinux8') {
-                    script {
-                        if (env.BUILD_LABEL == null ) {
-                            env.BUILD_LABEL = sh(script: "date +%Y%m%d-%H%M", returnStdout: true).toString().trim() +"_eclipsecentos7"
-                        }
+                script {
+                    if (env.BUILD_LABEL == null ) {
+                        env.BUILD_LABEL = sh(script: "date +%Y%m%d-%H%M", returnStdout: true).toString().trim() +"_eclipsecentos7"
                     }
-                    echo "In Init, BUILD_LABEL is ${env.BUILD_LABEL}"    
-                    sh 'pwd && free -m && cd operator && docker build -t quay.io/ianboden/amlen-operator:v1.0.378. && docker push quay.io/ianboden/amlen-operaotr:v1.0.378'
                 }
+                echo "In Init, BUILD_LABEL is ${env.BUILD_LABEL}"    
+                sh 'pwd && free -m && cd operator && docker build -t quay.io/ianboden/amlen-operator:v1.0.378. && docker push quay.io/ianboden/amlen-operaotr:v1.0.378'
             }
         }
     }
