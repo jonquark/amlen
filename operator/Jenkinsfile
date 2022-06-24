@@ -4,6 +4,7 @@
 //
 
 pipeline {
+  agent any
   stages {
         stage('Create Amlen Image') {
             steps {
