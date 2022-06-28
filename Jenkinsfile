@@ -77,6 +77,8 @@ spec:
                             #ssh -o BatchMode=yes genie.amlen@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/projectname/snapshots
                             ssh -o BatchMode=yes genie.amlen@projects-storage.eclipse.org mkdir -p /home/data/httpd/download.eclipse.org/amlen/snapshots/${NOORIGIN_BRANCH}/${BUILD_LABEL}/centos7/
                             scp -o BatchMode=yes -r rpms/*.tar.gz genie.amlen@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/amlen/snapshots/${NOORIGIN_BRANCH}/${BUILD_LABEL}/centos7/
+                            curl -X POST 'https://quay.io/api/v1/repository/amlen/kubernetes/build/' -H 'Authorization: Bearer FM99HUYmGDaW0RBz7ZJhPHy3dtRSFVC6gQlWWfYW' -H 'Content-Type: application/json' -d '{ "archive_url":"https://download.eclipse.org/amlen/snapshots/${NOORIGIN_BRANCH}/${BUILD_LABEL}/centos7/EclipseAmlenServer-centos7-1.1dev-${BUILD_LABEL}.tar.gz", "docker_tags":["${NOORIGIN_BRANCH"}] }'
+
                         '''
                     }
                 }
