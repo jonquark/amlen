@@ -26,7 +26,7 @@ WORKDIR ${IMA_SVR_INSTALL_PATH}/bin
 # Add RPM in a temporary directory inside the container
 # Make sure that imaserver.rpm is available in the directory where "docker build" command
 # is being executed
-ADD ./imaserver.rpm /tmp/
+ADD ./EclipseAmlenServer-*.rpm /tmp/imaserver.rpm
 
 # Update packages
 RUN yum -y upgrade 
